@@ -1,0 +1,14 @@
+# Node
+*.log
+*.log.*
+node_modules
+
+#Directory
+dist/
+storybook-static/
+
+#File defaulft
+code.js
+.DS_Store
+
+*storybook.log
