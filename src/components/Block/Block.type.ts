@@ -2,7 +2,7 @@ import type React from "react";
 
 // type Variants
 export type BlockVariants = "block" | "grid";
-export type Row = 1 | 2 | 3 | 4 | 5 | 6;
+export type Row = 1 | 2 | 3;
 
 // interface´s
 export interface BlockVariantProps {
@@ -12,5 +12,4 @@ export interface BlockVariantProps {
 
 export interface BlockProps
   extends React.HTMLAttributes<HTMLDivElement>,
-  BlockVariantProps {
-}
+    BlockVariantProps {}

@@ -1,19 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
-import { Block } from "../Block/Block";
+//  import "@/stories/globalSB.css";
 
-const MyDoc =() =>{
- }
+// retonar un html para retornar a MyDoc en el preview de storybook
 
 const meta = {
-  title: "Design System/Button",
+  title: "Components/Button",
   component: Button,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
-    docs: {
-        page: MyDoc,
-    },
+    docs: {},
     backgrounds: {
       default: "light",
       values: [
@@ -24,7 +21,6 @@ const meta = {
     },
   },
 } satisfies Meta<typeof Button>;
-
 
 export default meta;
 type Story = StoryObj<typeof meta>;

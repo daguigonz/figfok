@@ -2,6 +2,7 @@ import React from "react";
 import "../App.css";
 import Banner from "../components/Banner";
 import bannerFigTok from "../img/banner.jpg";
+import {Button} "@components/Button";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -16,6 +17,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
       <main className="container">
         <section>{children}</section>
+        <Button variant="primary">Primary de prueba</Button>
       </main>
 
       <footer>

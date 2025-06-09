@@ -15,9 +15,6 @@ export const blockVariants = cva(styles.base, {
       1: styles.row1,
       2: styles.row2,
       3: styles.row3,
-      4: styles.row4,
-      5: styles.row5,
-      6: styles.row6,
     },
   },
   defaultVariants: {
@@ -45,11 +42,7 @@ export const Block = ({
 };
 
 const Col = ({ children, ...props }: { children: React.ReactNode }) => {
-  return (
-    <div  {...props}>
-      {children}
-    </div>
-  );
+  return <div {...props}>{children}</div>;
 };
 
 Block.displayName = "Block";
