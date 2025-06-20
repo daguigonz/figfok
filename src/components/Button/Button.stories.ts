@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
-//  import "@/stories/globalSB.css";
-
-// retonar un html para retornar a MyDoc en el preview de storybook
 
 const meta = {
   title: "Components/Button",
@@ -10,15 +7,20 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
-    docs: {},
-    backgrounds: {
-      default: "light",
-      values: [
-        { name: "light", value: "#ffffff" },
-        { name: "dark", value: "#1a1a1a" },
-        { name: "gray", value: "#f5f5f5" },
-      ],
+  },
+  argTypes: {
+    variant: {
+      control: "select",
+      options: ["primary", "secondary", "outline", "text", "link"],
     },
+    size: {
+      control: "select",
+      options: ["small", "medium", "large"],
+    },
+    disabled: {
+      control: "boolean",
+    },
+    onClick: { action: "clicked" },
   },
 } satisfies Meta<typeof Button>;
 
@@ -29,5 +31,6 @@ export const Primary: Story = {
   args: {
     variant: "primary",
     children: "Button",
+    disabled: false,
   },
 };

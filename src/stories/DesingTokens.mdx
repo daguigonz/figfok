@@ -1,0 +1,97 @@
+import { Meta, ColorPalette, ColorItem, Typeset, Description } from '@storybook/addon-docs/blocks';
+import { Block } from "@components/Block";
+import { color, typography } from '@components/Shared/designTokens';
+
+<Meta title="Desing Tokens" />
+
+# Desing Tokens
+
+Design tokens in FigTok represent an abstraction of design 
+decisions defined within Figma, created to build, maintain, 
+and scale design systems consistently.
+Elements such as spacing, color, typography, styles, and animations 
+are transformed into structured data — in our case, exported 
+as JSON, CSS, and list formats.
+
+Instead of relying on hard-coded values, tokens enable visual 
+consistency and technical flexibility across all product experiences, 
+serving as a direct bridge between design and development.
+
+## Typography
+
+The project uses Inter as its primary typeface, inherited directly 
+from Figma’s base typography. Text sizes also follow the recommendations 
+outlined in Figma’s official documentation.
+
+<Typeset
+  fontSizes={[
+    Number(typography.size.base),
+    Number(typography.size.medium),
+    Number(typography.size.big),
+  ]}
+  sampleText="Hola mundo"
+  fontFamily={typography.type.primary}
+/>
+
+The FigTok UI aims to closely match Figma’s native interface, 
+which is why we adopt the following visual and structural guidelines.
+
+<Block> 
+  <table>
+    <thead>
+      <tr>
+        <th>Token name</th>
+        <th>prop value</th>
+        <th>value</th>
+        <th>px</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td> `size.value.base` </td>
+        <td> `b` </td>
+        <td> `1rem` </td>
+        <td> `12` </td>
+      </tr>
+
+      <tr>
+        <td> `size.value.medium` </td>
+        <td> `m` </td>
+        <td> `1.5rem` </td>
+        <td> `16` </td>
+      </tr>
+
+      <tr>
+        <td> `size.value.big` </td>
+        <td> `b` </td>
+        <td> `2.5rem` </td>
+        <td> `36` </td>
+      </tr>
+
+    </tbody>
+  </table>
+</Block>
+
+## Colors
+Refer to the Palmetto Design Tokens Figma for colors.
+
+<ColorPalette>
+  <ColorItem title="color.orange" subtitle="Branding primary" colors={[color.orange]} />
+  <ColorItem title="color.blue" subtitle="Primary UI" colors={[color.blue]} /> 
+  <ColorItem title="color.purple" subtitle="Purple" colors={[color.purple]} /> 
+  <ColorItem title="color.black" subtitle="Base color" 
+      colors={{
+      Black: [color.black],
+      Grey: [color.grey],
+      Smoke: [color.smoke],
+      White: [color.white],
+      }} 
+  /> 
+</ColorPalette>
+
+
+## Made in
+
+- [Github - daguigonz](https://github.com/daguigonz)
+- [Instagram - @daguigonz](https://instagram.com/daguigonz)
+

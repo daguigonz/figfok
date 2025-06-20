@@ -1,7 +1,8 @@
 import type { Preview } from "@storybook/react-vite";
 import type { Decorator } from "@storybook/react";
 import { useEffect } from "react";
-import "@/stories/globalSB.css";
+import "@/App.css";
+import "@/css/reset.css";
 
 // @detect dark mode in the preview
 const withTheme: Decorator = (Story, context) => {
@@ -39,15 +40,12 @@ const preview: Preview = {
       },
     },
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
       test: "todo",
     },
     options: {
       storySort: {
         order: [
-          "Docs", // Primer .mdx
+          "Intro", // Primer .mdx
           "Components",
         ],
       },
@@ -64,6 +62,21 @@ const preview: Preview = {
           value: "#2c2c2c",
         },
       ],
+    },
+    docs: {
+      source: {
+        type: "code", // 'code' | 'dynamic' | 'auto'
+      },
+      canvas: {
+        sourceState: "shown", // 'shown' | 'hidden' | 'none'
+      },
+    },
+    toolbar: {
+      title: { hidden: false },
+      zoom: { hidden: false },
+      eject: { hidden: false },
+      copy: { hidden: false },
+      fullscreen: { hidden: false },
     },
   },
   decorators: [withTheme],

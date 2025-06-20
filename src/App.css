@@ -1,2 +1,86 @@
-root {
+/* @light */
+:root,
+[data-theme="light"] {
+  /* base */
+  --tes: #07ef2c;
+  --color-orange: #ff3617;
+  --color-blue: #0d99ff;
+  --color-purple: #9747ff;
+  --color-black: #2c2c2c;
+  --color-gray: #b3b3b3;
+  --color-smoke: #ededed;
+  --color-white: #ffffff;
+  --btn-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Text */
+  --color-text: var(--color-black);
+
+  /* background */
+  --color-backgroud: var(--color-white);
+  --color-background-primary: var(--color-orange);
+  --color-background-secondary: var(--color-blue);
+  --color-background-tertiary: var(--color-gray);
+  --color-background-inverso: none;
+
+  /* Colores de borde y división */
+  --color-border: #444444;
+  --color-border-light: #444444;
+  --color-divider: #444444;
+}
+
+/* @dark */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]),
+  [data-theme="dark"] {
+    /* base */
+    --tes: yellow;
+    --color-orange: #ff3617;
+    --color-blue: #0d99ff;
+    --color-purple: #9747ff;
+    --color-black: #2c2c2c;
+    --color-gray: #b3b3b3;
+    --color-smoke: #ededed;
+    --color-white: #ffffff;
+    --btn-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Text */
+    --color-text: var(--color-white) !important;
+
+    /* background */
+    --color-backgroud: var(--color-white);
+    --color-background-primary: var(--color-orange);
+    --color-background-secondary: var(--color-blue);
+    --color-background-tertiary: var(--color-gray);
+    --color-background-inverso: none;
+
+    /* Colores de borde y división */
+    --color-border: #444444;
+    --color-border-light: #444444;
+    --color-divider: #444444;
+  }
+}
+
+:root {
+  /* Fonts */
+  --font-family: "Inter", sans-serif;
+  --font-size-base: 16px;
+  --font-size: 1rem;
+  --font-size-big: 2.5rem;
+  --container: 95%;
+  --space: 10px;
+  --space-0: calc(var(--space) * 0);
+  --space-1: calc(var(--space) * 1);
+  --space-2: calc(var(--space) * 2);
+  --space-3: calc(var(--space) * 3);
+  --space-4: calc(var(--space) * 4);
+  --space-5: calc(var(--space) * 5);
+  --space-half-2: calc(var(--space) / 2);
+  --space-half-3: calc(var(--space) / 3);
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
 }

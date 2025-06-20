@@ -2,12 +2,12 @@ import type React from "react";
 
 // type Variants
 export type BlockVariants = "block" | "grid";
-export type Row = 1 | 2 | 3;
+export type Col = "col_100" | "col_70_20";
 
 // interface´s
 export interface BlockVariantProps {
   variant?: BlockVariants;
-  row?: Row;
+  col?: Col;
 }
 
 export interface BlockProps

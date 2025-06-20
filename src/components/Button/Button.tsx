@@ -13,18 +13,22 @@ export const buttonVariants = cva(styles.base, {
       secondary: styles.secondary,
       outline: styles.outline,
       danger: styles.danger,
-      ghost: styles.ghost,
+      text: styles.text,
       link: styles.link,
     },
     size: {
-      sm: styles.sm,
-      md: styles.md,
-      lg: styles.lg,
+      small: styles.small,
+      medium: styles.medium,
+      large: styles.large,
+    },
+    fullWidth: {
+      true: styles.fullWidth,
     },
   },
   defaultVariants: {
     variant: "primary",
-    size: "md",
+    size: "medium",
+    fullWidth: false
   },
 });
 
@@ -32,16 +36,17 @@ export const buttonVariants = cva(styles.base, {
 export const Button = forwardRef<ButtonRef, ButtonProps>(
   (
     {
-      className,
-      variant,
-      size,
-      isLoading,
-      children,
-      disabled,
-      startIcon,
-      endIcon,
-      onClick,
-      ...props
+        className,
+        variant,
+        size,
+        fullWidth,
+        isLoading = false,
+        startIcon,
+        endIcon,
+        children,
+        disabled,
+        onClick,
+        ...props
     },
     ref,
   ) => {
@@ -61,8 +66,7 @@ export const Button = forwardRef<ButtonRef, ButtonProps>(
 
     return (
       <button
-        ref={ref}
-        className={clsx(buttonVariants({ variant, size }), className)}
+        className={clsx(buttonVariants({ variant, size, fullWidth: fullWidth }), className)}
         disabled={isDisabled}
         onClick={handleClick}
         aria-disabled={isDisabled}

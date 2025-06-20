@@ -1,15 +1,32 @@
 .base {
-  background-color: aqua;
+}
+
+.base table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: left;
 }
 
 .grid {
+  display: grid;
+  gap: var(--space-3);
 }
+
 .block {
+  display: block;
 }
 
 .row1 {
 }
-.row2 {
+
+.col_100 {
+  grid-template-columns: repeat(80%, 1fr);
 }
+.col_70_20 {
+  grid-template-columns: 70% 1fr;
+  gap: 10px;
+}
+
 .row3 {
 }

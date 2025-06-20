@@ -1,0 +1,44 @@
+.base {
+  display: block;
+  text-align: center;
+  margin: calc(var(--space-4) * 2) auto;
+}
+
+.title {
+  font-size: var(--font-size-big);
+  font-weight: bold;
+}
+
+.text {
+  display: block;
+  margin: var(--space-4) auto 0;
+  font-size: var(--font-size-medium);
+}
+
+.circle {
+  margin: auto;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.circle:before,
+.circle:after {
+  content: "";
+  border-radius: 50%;
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
+}
+.circle:after {
+  box-shadow: 0 2px 0 var(--color-background-primary) inset;
+  animation: rotate 2s linear infinite;
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

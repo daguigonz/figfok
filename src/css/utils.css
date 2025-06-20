@@ -1,0 +1,26 @@
+.d-flex {
+  display: flex;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+.align-v {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.p-t-b-2 {
+  padding: var(--space-2) 0;
+}
+
+.p-t-b-3 {
+  padding: var(--space-3) 0;
+}
+
+.m-b-2 {
+  margin-bottom: var(--space-2);
+}

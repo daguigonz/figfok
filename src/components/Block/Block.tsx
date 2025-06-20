@@ -11,15 +11,14 @@ export const blockVariants = cva(styles.base, {
       block: styles.block,
       grid: styles.grid,
     },
-    row: {
-      1: styles.row1,
-      2: styles.row2,
-      3: styles.row3,
+    col: {
+      col_100: styles.col_100,
+      col_70_20: styles.col_70_20,
     },
   },
   defaultVariants: {
     variant: "block",
-    row: 1,
+    col: "col_100",
   },
 });
 
@@ -27,13 +26,13 @@ export const blockVariants = cva(styles.base, {
 export const Block = ({
   className,
   variant,
-  row,
+  col,
   children,
   ...props
 }: BlockProps) => {
   return (
     <div
-      className={clsx(blockVariants({ variant, row }), className)}
+      className={clsx(blockVariants({ variant, col }), className)}
       {...props}
     >
       {children}
@@ -41,8 +40,19 @@ export const Block = ({
   );
 };
 
-const Col = ({ children, ...props }: { children: React.ReactNode }) => {
-  return <div {...props}>{children}</div>;
+const Col = ({
+  children,
+  className,
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={className} {...props}>
+      {children}
+    </div>
+  );
 };
 
 Block.displayName = "Block";
