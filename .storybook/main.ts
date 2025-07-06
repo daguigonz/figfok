@@ -1,4 +1,4 @@
-import type { StorybookConfig } from "@storybook/react-vite";
+import type { StorybookConfig } from "@storybook/react-vite"
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -7,12 +7,12 @@ const config: StorybookConfig = {
     "@chromatic-com/storybook",
     "@storybook/addon-docs",
     "@storybook/addon-a11y",
-    "@storybook/addon-vitest",
+    "@storybook/addon-vitest"
   ],
   framework: {
     name: "@storybook/react-vite",
-    options: {},
+    options: {}
   },
-  staticDirs: [{ from: "../resources", to: "/assets" }],
-};
-export default config;
+  staticDirs: [{ from: "../resources", to: "/assets" }]
+}
+export default config

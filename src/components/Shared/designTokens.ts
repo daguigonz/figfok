@@ -5,20 +5,20 @@ export let color = {
   black: "#2C2C2C",
   grey: "#B3B3B3",
   smoke: "#EDEDED",
-  white: "#FFFFFF",
-};
+  white: "#FFFFFF"
+}
 
 export let typography = {
   type: {
-    primary: `"Inter", sans-serif;`,
+    primary: `"Inter", sans-serif;`
   },
   weight: {
     regular: "400",
-    bold: "700",
+    bold: "700"
   },
   size: {
     base: 12,
     medium: 16,
-    big: 36,
-  },
-};
+    big: 36
+  }
+}

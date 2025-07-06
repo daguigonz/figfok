@@ -1,11 +1,11 @@
-import React from "react";
-import styles from "./Banner.module.css";
-import type { BannerProps } from "./Banner.types";
+import React from "react"
+import styles from "./Banner.module.css"
+import type { BannerProps } from "./Banner.types"
 
 const Banner: React.FC<BannerProps> = ({
   altImg,
   image,
-  copyRightText = "Made in ...",
+  copyRightText = "Made in ..."
 }) => {
   return (
     <div className={styles.banner}>
@@ -14,7 +14,7 @@ const Banner: React.FC<BannerProps> = ({
       )}
       <div className={styles.copyText}>{copyRightText}</div>
     </div>
-  );
-};
+  )
+}
 
-export default Banner;
+export default Banner

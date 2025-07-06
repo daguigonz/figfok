@@ -1,5 +1,5 @@
 export interface BannerProps {
-  altImg: string;
-  image?: string;
-  copyRightText: string;
+  altImg: string
+  image?: string
+  copyRightText: string
 }

@@ -2,6 +2,11 @@
   display: flex;
 }
 
+.d-inline {
+  display: inline;
+  background-color: yellow;
+}
+
 .d-inline-block {
   display: inline-block;
 }
@@ -23,4 +28,16 @@
 
 .m-b-2 {
   margin-bottom: var(--space-2);
+}
+
+.m-r-1 {
+  margin-right: var(--space-1);
+}
+
+.m-r-2 {
+  margin-right: var(--space-2);
+}
+
+.m-l-2 {
+  margin-left: var(--space-2);
 }

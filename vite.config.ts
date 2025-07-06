@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import reactRefresh from "@vitejs/plugin-react-refresh";
-import { viteSingleFile } from "vite-plugin-singlefile";
-import path from "path";
+import { defineConfig } from "vite"
+import reactRefresh from "@vitejs/plugin-react-refresh"
+import { viteSingleFile } from "vite-plugin-singlefile"
+import path from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,15 +15,15 @@ export default defineConfig({
     outDir: "../dist",
     rollupOptions: {
       output: {
-        inlineDynamicImports: true,
-      },
-    },
+        inlineDynamicImports: true
+      }
+    }
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@components": path.resolve(__dirname, "./src/components"),
-      "@layouts": path.resolve(__dirname, "./src/layouts"),
-    },
-  },
-});
+      "@layouts": path.resolve(__dirname, "./src/layouts")
+    }
+  }
+})

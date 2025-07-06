@@ -1,13 +1,14 @@
-import type React from "react";
+import type React from "react"
 
 // type Variants
-export type BlockVariants = "block" | "grid";
-export type Col = "col_100" | "col_70_20";
+export type BlockVariants = "block" | "grid" | "nowrap"
+
+export type Col = "col_100" | "col_70_20"
 
 // interface´s
 export interface BlockVariantProps {
-  variant?: BlockVariants;
-  col?: Col;
+  variant?: BlockVariants
+  col?: Col
 }
 
 export interface BlockProps

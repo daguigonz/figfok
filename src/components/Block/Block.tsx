@@ -1,8 +1,8 @@
-import React from "react";
-import { cva } from "class-variance-authority";
-import { clsx } from "clsx";
-import styles from "./Block.module.css";
-import type { BlockProps } from "./Block.type";
+import React from "react"
+import { cva } from "class-variance-authority"
+import { clsx } from "clsx"
+import styles from "./Block.module.css"
+import type { BlockProps } from "./Block.type"
 
 // Config Block CVA - https://cva.style/docs/config
 export const blockVariants = cva(styles.base, {
@@ -10,17 +10,18 @@ export const blockVariants = cva(styles.base, {
     variant: {
       block: styles.block,
       grid: styles.grid,
+      nowrap: styles.nowrap
     },
     col: {
       col_100: styles.col_100,
-      col_70_20: styles.col_70_20,
-    },
+      col_70_20: styles.col_70_20
+    }
   },
   defaultVariants: {
     variant: "block",
-    col: "col_100",
-  },
-});
+    col: "col_100"
+  }
+})
 
 // <Block>
 export const Block = ({
@@ -37,25 +38,25 @@ export const Block = ({
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
 const Col = ({
   children,
   className,
   ...props
 }: {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }) => {
   return (
     <div className={className} {...props}>
       {children}
     </div>
-  );
-};
+  )
+}
 
-Block.displayName = "Block";
-Block.Col = Col;
+Block.displayName = "Block"
+Block.Col = Col
 
-export default Block;
+export default Block

@@ -1,25 +1,103 @@
-import { useRef, useState, useEffect } from "react";
-import { MainLayout } from "@layouts/MainLayout";
-import { Loading } from "@components/Loading";
-import { Button } from "@components/Button";
-import { Block } from "@components/Block";
+import { useRef, useState, useEffect } from "react"
+import { MainLayout } from "@layouts/MainLayout"
+import { Loading } from "@components/Loading"
+import { Button } from "@components/Button"
+import { Block } from "@components/Block"
+
+import { figTok } from "./utils/figTok"
 
 function App() {
+  const _figTok = new figTok()
+  const optionsExport = _figTok.getOptionsExport()
+
   const [appConfig, setAppConfig] = useState({
     load: true,
-  });
+    optionsExport
+  })
 
-  const [tab, setTab] = useState("Css");
+  const [uiConfig, setUiConfig] = useState({
+    tab: {
+      index: "Css"
+    },
+    inputPrefix: {
+      value: "--c"
+    }
+  })
 
   useEffect(() => {
-    setAppConfig({ load: false });
-  }, [tab, appConfig]);
+    init()
+
+    window.onmessage = event => {
+      callBackFigma(event)
+    }
+  }, [uiConfig])
+
+  const init = () => {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "request-figma"
+        }
+      },
+      "*"
+    )
+  }
+
+  const callBackFigma = async (event: MessageEvent) => {
+    if (!event.data || !event.data.pluginMessage) {
+      return
+    }
+
+    const message = event.data.pluginMessage
+
+    if (!message.type) {
+      return
+    }
+
+    const figmaCore = message.data
+
+    switch (message.type) {
+      case "collections-data":
+        setAppConfig({
+          ...appConfig,
+          load: false
+        })
+
+        // console.log("collections-data", collections)
+        break
+
+      case "error":
+        console.log("error", message.message)
+        break
+
+      default:
+        console.log("message", message)
+    }
+  }
+
+  const handleSelectOptionExport = (option: string) => {
+    setUiConfig({
+      ...uiConfig,
+      tab: {
+        index: option
+      }
+    })
+  }
+
+  const handleInputPrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUiConfig({
+      ...uiConfig,
+      inputPrefix: {
+        value: e.target.value
+      }
+    })
+  }
 
   return (
     <>
       {appConfig.load ? (
         <div className="container load">
-          <Loading.Title>Procesando Figma</Loading.Title>
+          <Loading.Title>Procesando proyecto</Loading.Title>
           <Loading visible="visible" variant="circle" />
           <Loading.Text> Cargando datos ...</Loading.Text>
         </div>
@@ -32,11 +110,31 @@ function App() {
             al instante y copia con un clic. Simple, veloz y productivo.
           </div>
 
-          <MainLayout.Tabs>
-            <Button variant="primary"> Css </Button>
-            <Button variant="primary"> Json </Button>
-            <Button variant="primary"> Tokens </Button>
-          </MainLayout.Tabs>
+          <Block variant="nowrap">
+            <MainLayout.Tabs className="">
+              {optionsExport.map((option, index) => (
+                <Button
+                  variant={uiConfig.tab.index === option ? "active" : "outline"}
+                  onClick={() => handleSelectOptionExport(option)}
+                  key={index}
+                >
+                  {option}
+                </Button>
+              ))}
+            </MainLayout.Tabs>
+
+            <div>
+              <label className="m-r-2">Prefijo</label>
+
+              <input
+                type="text"
+                id="Name"
+                name="Name"
+                value={uiConfig.inputPrefix.value}
+                onChange={e => handleInputPrefix(e)}
+              />
+            </div>
+          </Block>
 
           <MainLayout.Hr />
 
@@ -52,7 +150,7 @@ function App() {
         </MainLayout>
       )}
     </>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -11,7 +11,6 @@
 }
 
 .tabs {
-  /* quitar borde redondeado superior e inferrior derecho del primer button dentro de esta etiqueta  */
 }
 
 .tabs > button:not(:first-child):not(:last-child) {

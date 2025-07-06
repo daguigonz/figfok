@@ -17,6 +17,14 @@
   display: block;
 }
 
+.nowrap {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .row1 {
 }
 

@@ -1,6 +1,6 @@
-import React from "react";
-import styles from "./Loading.module.css";
-import type { LoadingProps } from "./Loading.type";
+import React from "react"
+import styles from "./Loading.module.css"
+import type { LoadingProps } from "./Loading.type"
 
 export const Loading = ({
   variant = "circle",
@@ -17,26 +17,26 @@ export const Loading = ({
 
       {variant === "bar" && <div className={styles.barInner} />}
     </div>
-  );
-};
+  )
+}
 
 const Title = ({ children, ...props }: { children: React.ReactNode }) => {
   return (
     <div className={styles.title} {...props}>
       {children}
     </div>
-  );
-};
+  )
+}
 
 const Text = ({ children, ...props }: { children: React.ReactNode }) => {
   return (
     <div className={styles.text} {...props}>
       {children}
     </div>
-  );
-};
+  )
+}
 
-Loading.displayName = "Loading";
-Loading.Title = Title;
-Loading.Text = Text;
-export default Loading;
+Loading.displayName = "Loading"
+Loading.Title = Title
+Loading.Text = Text
+export default Loading

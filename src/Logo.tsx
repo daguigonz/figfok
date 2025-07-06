@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from "react"
 
 const Logo: FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -15,6 +15,6 @@ const Logo: FC<{ className?: string }> = ({ className }) => (
       stroke-width="2"
     />
   </svg>
-);
+)
 
-export default Logo;
+export default Logo
