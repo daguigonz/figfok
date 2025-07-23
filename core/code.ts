@@ -1,3 +1,5 @@
+import { mergeCollectionsAndVariables } from "../src/utils/figTok"
+
 /*
  * Figma UI
  * https://www.figma.com/plugin-docs/api/properties/showui/
@@ -40,52 +42,27 @@ figma.ui.onmessage = async (msg: any) => {
   }
 }
 
-function handle_figma() {
+/*
+ * Figma whatch`s
+ * https://www.figma.com/plugin-docs/api/properties/onmessage/
+ *
+ * Metodo "onmessage" que retorna un objeto, mediante la variable "type"
+ * se puede identificar el tipo de mensaje
+ *
+ */
+async function handle_figma() {
   try {
-    figma.ui.postMessage({
-      type: "collections-data",
-      data: collectionsData
-    })
-  } catch (error) {
-    figma.ui.postMessage({
-      type: "error",
-      message:
-        "Error al obtener colecciones: " +
-        (error instanceof Error ? error.message : "Error desconocido")
-    })
-  }
-
-  // figma.ui.postMessage({
-  //   type: "collections-data",
-  //   data: coreFigma
-  // })
-}
-
-// Nueva función para obtener colecciones
-async function handle_collections_and_variables() {
-  try {
-    // Obtener colecciones de variables de Figma
     const collections = await figma.variables.getLocalVariableCollectionsAsync()
+    const variables = await figma.variables.getLocalVariablesAsync()
+    const collectionsData = mergeCollectionsAndVariables(collections, variables)
 
-    // Mapear los datos que necesitas
-    const collectionsData = collections.map(collection => ({
-      id: collection.id,
-      name: collection.name,
-      variableCount: collection.variableIds.length,
-      modes: collection.modes.map(mode => ({
-        id: mode.modeId,
-        name: mode.name
-      })),
-      isRemote: collection.remote
-    }))
+    console.log(collectionsData)
 
-    // Enviar datos a React - ESTRUCTURA CORRECTA
     figma.ui.postMessage({
       type: "collections-data",
       data: collectionsData
     })
   } catch (error) {
-    // Enviar error a React - ESTRUCTURA CORRECTA
     figma.ui.postMessage({
       type: "error",
       message:

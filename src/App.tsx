@@ -1,14 +1,13 @@
-import { useRef, useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { MainLayout } from "@layouts/MainLayout"
 import { Loading } from "@components/Loading"
 import { Button } from "@components/Button"
 import { Block } from "@components/Block"
 
-import { figTok } from "./utils/figTok"
+import { getExportOptions } from "./utils/figTok"
 
 function App() {
-  const _figTok = new figTok()
-  const optionsExport = _figTok.getOptionsExport()
+  const optionsExport = getExportOptions()
 
   const [appConfig, setAppConfig] = useState({
     load: true,
@@ -54,7 +53,7 @@ function App() {
       return
     }
 
-    const figmaCore = message.data
+    // const figmaCore = message.data
 
     switch (message.type) {
       case "collections-data":
