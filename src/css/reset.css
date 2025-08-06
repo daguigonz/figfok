@@ -17,6 +17,7 @@ a {
 html {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
+  line-height: var(--font-line-height);
   height: 100%;
   color: var(--color-text);
 }

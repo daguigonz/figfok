@@ -26,6 +26,10 @@
   padding: var(--space-3) 0;
 }
 
+.p-b-3 {
+  padding: 0 0 var(--space-3) 0;
+}
+
 .m-b-2 {
   margin-bottom: var(--space-2);
 }

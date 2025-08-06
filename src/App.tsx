@@ -4,34 +4,51 @@ import { Loading } from "@components/Loading"
 import { Button } from "@components/Button"
 import { Block } from "@components/Block"
 
-import { getExportOptions } from "./utils/figTok"
+import { getExportOptions, toCss, toTokens } from "./utils/figTok"
 
 function App() {
   const optionsExport = getExportOptions()
-
+  const [dataFigma, setDataFigma] = useState([])
   const [appConfig, setAppConfig] = useState({
     load: true,
     optionsExport
   })
-
   const [uiConfig, setUiConfig] = useState({
     tab: {
       index: "Css"
     },
+    panelCode: " ",
     inputPrefix: {
       value: "--c"
     }
   })
 
+  /**
+   * Initializes the application by establishing a connection with the Figma plugin.
+   *
+   * This function sets up the necessary event listeners and calls the `connectFigma`
+   * function to initiate the communication.
+   */
   useEffect(() => {
-    init()
+    connectFigma()
 
     window.onmessage = event => {
       callBackFigma(event)
+      console.log("efect")
     }
-  }, [uiConfig])
+  }, [])
 
-  const init = () => {
+  /**
+   * Initiates communication from the UI (iframe) to the Figma plugin.
+   *
+   * Sends a postMessage with a custom message type that the plugin
+   * should interpret as a data request trigger.
+   *
+   * Note:
+   * - We use "*" as the `targetOrigin` because Figma does not expose a fixed origin
+   *   within its plugin environment.
+   */
+  const connectFigma = () => {
     parent.postMessage(
       {
         pluginMessage: {
@@ -42,47 +59,72 @@ function App() {
     )
   }
 
+  /**
+   * Listener for messages sent from the Figma plugin to the UI.
+   *
+   * This function acts as the central dispatcher for plugin-to-UI communication,
+   * interpreting different message types and updating the app state accordingly.
+   *
+   * Behavior:
+   * - type === "data-figma": Sets `appConfig.load` to false and updates Figma data state.
+   * - type === "error": Logs the error message sent by the plugin.
+   * - unknown type: Logs the entire message for debugging purposes.
+   *
+   * @param {MessageEvent} event - The message event received via `postMessage`.
+   */
   const callBackFigma = async (event: MessageEvent) => {
-    if (!event.data || !event.data.pluginMessage) {
-      return
-    }
+    // Ignore invalid messages or unexpected structure
+    if (!event.data || !event.data.pluginMessage) return
 
     const message = event.data.pluginMessage
 
-    if (!message.type) {
-      return
-    }
+    // Safeguard: pluginMessage must include a valid `type`
+    if (!message.type) return
 
-    // const figmaCore = message.data
-
-    switch (message.type) {
-      case "collections-data":
-        setAppConfig({
-          ...appConfig,
-          load: false
-        })
-
-        // console.log("collections-data", collections)
-        break
-
-      case "error":
-        console.log("error", message.message)
-        break
-
-      default:
-        console.log("message", message)
+    // Handle supported message types
+    if (message.type === "data-figma") {
+      setAppConfig({
+        ...appConfig,
+        load: false
+      })
+      console.log("callBakc ")
+      setDataFigma(message.data) // Handle supported message types
+    } else if (message.type === "error") {
+      console.log("error", message.message)
+    } else {
+      // Catch-all for unknown or unsupported message types
+      console.log("message", message)
     }
   }
 
   const handleSelectOptionExport = (option: string) => {
+    let process = processExport(option)
+    console.log("click:", option)
     setUiConfig({
       ...uiConfig,
       tab: {
         index: option
-      }
+      },
+      panelCode: process
     })
   }
 
+  const processExport = (optionExport: string): string => {
+    let result = " "
+
+    if (optionExport === "Css") {
+      result = toCss(dataFigma, uiConfig.inputPrefix.value)
+    } else if (optionExport === "Tokens") {
+      result = "{}"
+    }
+
+    return result
+  }
+  /**
+   * Handles the input of the prefix value.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event triggered by the input.
+   */
   const handleInputPrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUiConfig({
       ...uiConfig,
@@ -121,29 +163,44 @@ function App() {
                 </Button>
               ))}
             </MainLayout.Tabs>
-
-            <div>
-              <label className="m-r-2">Prefijo</label>
-
-              <input
-                type="text"
-                id="Name"
-                name="Name"
-                value={uiConfig.inputPrefix.value}
-                onChange={e => handleInputPrefix(e)}
-              />
-            </div>
           </Block>
 
           <MainLayout.Hr />
 
-          <Block className="p-t-b-3" variant="grid" col={"col_70_20"}>
-            <Block.Col> col 1 </Block.Col>
+          <Block className="p-b-2" variant="grid" col={"col_70_20"}>
+            <Block.Col>
+              <Block.RenderView> {uiConfig.panelCode} </Block.RenderView>
+            </Block.Col>
             <Block.Col className="align-v">
-              <Button variant="primary" className="m-b-2">
+              <div className="m-b-2">
+                <label className="m-r-2">Prefijo</label>
+
+                <input
+                  type="text"
+                  id="Name"
+                  name="Name"
+                  value={uiConfig.inputPrefix.value}
+                  onChange={e => handleInputPrefix(e)}
+                />
+              </div>
+
+              <Button
+                variant="outline"
+                size="large"
+                fullWidth
+                className="m-b-2"
+              >
+                Copy
+              </Button>
+
+              <Button
+                variant="primary"
+                size="large"
+                fullWidth
+                className="m-b-2"
+              >
                 Descarga
               </Button>
-              <Button variant="outline"> Copy </Button>
             </Block.Col>
           </Block>
         </MainLayout>

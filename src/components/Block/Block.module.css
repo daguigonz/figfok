@@ -1,4 +1,5 @@
 .base {
+  display: initial;
 }
 
 .base table {
@@ -25,7 +26,18 @@
   align-items: center;
 }
 
+.renderView {
+  min-height: 280px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.renderView code {
+  line-height: 1.8em;
+}
+
 .row1 {
+  grid-template-columns: repeat(1fr);
 }
 
 .col_100 {
@@ -34,7 +46,4 @@
 .col_70_20 {
   grid-template-columns: 70% 1fr;
   gap: 10px;
-}
-
-.row3 {
 }

@@ -26,7 +26,6 @@ figma.ui.onmessage = async (msg: any) => {
   try {
     switch (msg.type) {
       case "request-figma":
-        // await handle_collections_and_variables() // Nuevo caso
         handle_figma()
         break
 
@@ -54,13 +53,11 @@ async function handle_figma() {
   try {
     const collections = await figma.variables.getLocalVariableCollectionsAsync()
     const variables = await figma.variables.getLocalVariablesAsync()
-    const collectionsData = mergeCollectionsAndVariables(collections, variables)
-
-    console.log(collectionsData)
+    const data = mergeCollectionsAndVariables(collections, variables)
 
     figma.ui.postMessage({
-      type: "collections-data",
-      data: collectionsData
+      type: "data-figma",
+      data
     })
   } catch (error) {
     figma.ui.postMessage({

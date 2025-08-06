@@ -56,7 +56,22 @@ const Col = ({
   )
 }
 
+const RenderView = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode
+  className?: string
+}) => {
+  return (
+    <pre className={styles.renderView} {...props}>
+      <code>{children}</code>
+    </pre>
+  )
+}
+
 Block.displayName = "Block"
 Block.Col = Col
+Block.RenderView = RenderView
 
 export default Block

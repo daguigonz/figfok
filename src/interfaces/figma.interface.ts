@@ -1,13 +1,14 @@
 export interface TokenObject {
-  // [key: string]: string | TokenObject
   id: string
   name: string
+  resolvedType: "COLOR" | "FLOAT" | "STRING" | "BOOLEAN"
 }
 
 export interface FigmaCollection {
   id: string
   name: string
   variableIds: string[]
+  variables: FigmaVariable[]
 }
 
 export interface FigmaVariable {
@@ -16,5 +17,6 @@ export interface FigmaVariable {
   name: string
   variableCollectionId: string
   valuesByMode: { [key: string]: any }
+  value: any
   resolvedType: "COLOR" | "FLOAT" | "STRING" | "BOOLEAN"
 }
