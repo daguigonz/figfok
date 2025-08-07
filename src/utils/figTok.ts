@@ -9,20 +9,24 @@ const getExportOptions = (): ExportOption[] => {
   return ["Css", "Tokens", "Table"]
 }
 
-// Process
-const processTokens = (
-  typeProcess: string,
-  dataFigma: FigmaCollection[]
-): string => {
-  let outPut = ""
-
-  if (typeProcess === "Css") {
-    outPut = toCss(dataFigma)
-  }
-
-  return outPut
-}
-
+/**
+ * Converts normalized RGB values to a hexadecimal color string.
+ *
+ * Each RGB component (r, g, b) is expected to be a number between 0 and 1.
+ * The function multiplies each component by 255, rounds it to the nearest
+ * integer, converts it to a two-character hexadecimal string, and concatenates
+ * the result into a valid hex color.
+ *
+ * Example:
+ * ```ts
+ * rgbtohex(1, 0.5, 0); // returns "#ff8000"
+ * ```
+ *
+ * @param {number} r - Red component (range: 0 to 1)
+ * @param {number} g - Green component (range: 0 to 1)
+ * @param {number} b - Blue component (range: 0 to 1)
+ * @returns {string} Hexadecimal color string (e.g. "#ffcc00")
+ */
 const rgbtohex = (r: number, g: number, b: number): string => {
   const toHex = (c: number) =>
     Math.round(c * 255)
@@ -31,7 +35,28 @@ const rgbtohex = (r: number, g: number, b: number): string => {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`
 }
 
+/**
+ * Cleans and formats a given string for use in URLs or file names.
+ *
+ * This function performs the following transformations:
+ * 1. Removes accents and replaces "ñ" with "n".
+ * 2. Removes all special characters except letters, numbers, spaces, and slashes (/).
+ * 3. Replaces slashes (/) with hyphens (-).
+ * 4. Replaces spaces with hyphens (-).
+ * 5. Converts the final string to lowercase.
+ *
+ * Example:
+ * ```ts
+ * fixText("Señal / Número 100%") // returns "senal-numero-100"
+ * ```
+ *
+ * @param {string} texto - The input text to be cleaned and formatted.
+ * @returns {string} A lowercase, hyphenated, special-character-free string.
+ */
 const fixText = (texto: string): string => {
+  if (!texto) {
+    return ""
+  }
   // Step 1: remove accents and convert ñ to n
   const normalizedText: string = texto
     .normalize("NFD") // decompose
@@ -57,76 +82,167 @@ const fixText = (texto: string): string => {
   return finalText
 }
 
+/**
+ * Transforms a list of Figma variable collections into a CSS `:root` block
+ * containing custom property declarations (CSS variables).
+ *
+ * @template T - A list of Figma variable collections.
+ * @param {T} dataFigma - The array of Figma collections to transform.
+ * @param {string} prefix - The prefix to apply to each CSS variable name. Defaults to "--" if empty.
+ * @returns {string} A formatted CSS string containing all variables under a `:root` block.
+ *
+ * @example
+ * const css = toCss(figmaCollections, "--theme");
+ * console.log(css);
+ * // :root {
+ * //   --theme-colors-primary: #ff0000;
+ * //   --theme-spacing-md: 16px;
+ * // }
+ */
 const toCss = <T extends FigmaCollection[]>(
   dataFigma: T,
   prefix: string
 ): string => {
-  const css: string[] = [`:root {`]
-
-  // Map over collections
-  dataFigma.map(collection => {
-    const newKeyCollection = fixText(collection.name)
-    // generate css variables
-    collection.variables.map(variable => {
-      if (variable.resolvedType !== "BOOLEAN") {
-        const newName = fixText(variable.name)
-        const newValueVariable =
+  console.log("dataFigma", dataFigma)
+  const cssVariables = dataFigma.flatMap(collection => {
+    const collectionName = fixText(collection.name)
+    const newPrefix = prefix ? `${prefix}` : "--"
+    return collection.variables
+      .filter(variable => variable.resolvedType !== "BOOLEAN")
+      .map(variable => {
+        const variableName = fixText(variable.name)
+        const value =
           variable.resolvedType === "COLOR"
             ? rgbtohex(variable.value.r, variable.value.g, variable.value.b)
-            : variable.value
-        css.push(`    --${newKeyCollection}-${newName}: ${newValueVariable};`)
-      }
-    })
+            : String(variable.value)
+
+        const parts = [newPrefix, collectionName, variableName].filter(Boolean)
+
+        // console.log("test>", `${parts.join("-")}: ${value};`)
+
+        console.log("value:", value)
+
+        return `  ${parts.join("-")}: ${value};`
+      })
   })
-  css.push("}")
-  return css.join("\n")
+
+  return [":root {", ...cssVariables, "}"].join("\n")
 }
 
-const toTokens = () => {}
+/**
+ * Converts Figma variable collections into a structured JSON Design Tokens format.
+ *
+ * Each variable is normalized with a `$value` and `$type` property. Colors are converted to hexadecimal,
+ * and type names are adapted to common token conventions (e.g. "FLOAT" becomes "number").
+ *
+ * @template T - A list of Figma variable collections.
+ * @param {T} dataFigma - The array of Figma collections to convert.
+ * @returns {string} A JSON string representing the design tokens.
+ *
+ * @example
+ * const json = toTokens(figmaCollections);
+ * console.log(json);
+ * // {
+ * //   "colors": {
+ * //     "primary": {
+ * //       "$value": "#ff0000",
+ * //       "$type": "color"
+ * //     }
+ * //   }
+ * // }
+ */
+const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
+  const tokenObject = dataFigma.reduce(
+    (acc, collection) => {
+      const collectionName = fixText(collection.name)
 
+      acc[collectionName] = collection.variables.reduce(
+        (vars, variable) => {
+          const variableName = fixText(variable.name)
+
+          const value =
+            variable.resolvedType === "COLOR"
+              ? rgbtohex(variable.value.r, variable.value.g, variable.value.b)
+              : variable.value
+
+          let type = variable.resolvedType.toLowerCase()
+          if (type === "float") type = "number"
+
+          vars[variableName] = {
+            $value: value,
+            $type: type
+          }
+
+          return vars
+        },
+        {} as Record<string, any>
+      )
+
+      return acc
+    },
+    {} as Record<string, any>
+  )
+
+  return JSON.stringify(tokenObject, null, 2)
+}
+
+const toHTMLTable = <T extends FigmaCollection[]>(dataFigma: T): string => {
+  return ""
+}
+
+/**
+ * Merges Figma collections and variables into a single array of objects.
+ *
+ * @template T - A list of Figma collections.
+ * @template U - A list of Figma variables.
+ * @param {T} collections - The array of Figma collections to merge.
+ * @param {U} variables - The array of Figma variables to merge.
+ * @returns {FigmaCollection[]} An array of merged Figma collections and variables.
+ */
 const mergeCollectionsAndVariables = <
   T extends FigmaCollection[],
   U extends FigmaVariable[]
 >(
   collections: T,
   variables: U
-) => {
-  const tokens: TokenObject[] = []
+): FigmaCollection[] => {
+  const tokens: FigmaCollection[] = []
 
   // Map over collections
   collections.map(collection => {
     // Map over variables
-    const newVariables = collection.variableIds
+    const newVariables: FigmaVariable[] = collection.variableIds
       .map(variableId => {
         const variable = variables.find(v => v.id === variableId)
         if (variable) {
-          return {
-            id: variable.id,
-            key: variable.key,
+          return Object.assign({}, variable, {
             name: variable.name,
-            resolvedType: variable.resolvedType,
-            value: variable.valuesByMode[Object.keys(variable.valuesByMode)[0]]
-          }
+            value: variable.valuesByMode[Object.keys(variable.valuesByMode)[0]],
+            resolvedType: variable.resolvedType
+          })
         }
+        return undefined
       })
-      .filter(Boolean)
+      .filter((variable): variable is FigmaVariable => variable !== undefined)
 
     // Create a new collection object with the desired structure
-    const newCollections = {
+    const newCollection: FigmaCollection = {
       id: collection.id,
       name: collection.name,
-      variables: newVariables
+      variables: newVariables,
+      variableIds: collection.variableIds
     }
 
-    tokens.push(newCollections)
+    tokens.push(newCollection)
   })
 
   return tokens
 }
+
 export {
   getExportOptions,
-  processTokens,
   toTokens,
   toCss,
+  toHTMLTable,
   mergeCollectionsAndVariables
 }

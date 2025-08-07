@@ -4,7 +4,7 @@ import { Loading } from "@components/Loading"
 import { Button } from "@components/Button"
 import { Block } from "@components/Block"
 
-import { getExportOptions, toCss, toTokens } from "./utils/figTok"
+import { getExportOptions, toCss, toTokens, toHTMLTable } from "./utils/figTok"
 
 function App() {
   const optionsExport = getExportOptions()
@@ -83,12 +83,20 @@ function App() {
 
     // Handle supported message types
     if (message.type === "data-figma") {
+      const figmaData = message.data
+      const initialCode = toCss(figmaData, uiConfig.inputPrefix.value)
+
       setAppConfig({
         ...appConfig,
         load: false
       })
-      console.log("callBakc ")
-      setDataFigma(message.data) // Handle supported message types
+
+      setDataFigma(figmaData)
+
+      setUiConfig(prevUiConfig => ({
+        ...prevUiConfig,
+        panelCode: initialCode
+      }))
     } else if (message.type === "error") {
       console.log("error", message.message)
     } else {
@@ -115,7 +123,9 @@ function App() {
     if (optionExport === "Css") {
       result = toCss(dataFigma, uiConfig.inputPrefix.value)
     } else if (optionExport === "Tokens") {
-      result = "{}"
+      result = toTokens(dataFigma)
+    } else if (optionExport === "Table") {
+      result = toHTMLTable(dataFigma)
     }
 
     return result
