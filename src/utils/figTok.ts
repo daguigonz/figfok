@@ -2,7 +2,7 @@ import { ExportOption } from "@/types/figma.type"
 import {
   FigmaCollection,
   FigmaVariable,
-  TokenObject
+  ToCssParams
 } from "@/interfaces/figma.interface"
 
 const getExportOptions = (): ExportOption[] => {
@@ -88,11 +88,11 @@ const fixText = (texto: string): string => {
  *
  * @template T - A list of Figma variable collections.
  * @param {T} dataFigma - The array of Figma collections to transform.
- * @param {string} prefix - The prefix to apply to each CSS variable name. Defaults to "--" if empty.
+ * @param {ToCssParams} params - Parameters for CSS conversion, including an optional prefix and a flag to include collection names.
  * @returns {string} A formatted CSS string containing all variables under a `:root` block.
  *
  * @example
- * const css = toCss(figmaCollections, "--theme");
+ * const css = toCss(figmaCollections, { prefix: "--theme", includeCollections: true });
  * console.log(css);
  * // :root {
  * //   --theme-colors-primary: #ff0000;
@@ -101,12 +101,14 @@ const fixText = (texto: string): string => {
  */
 const toCss = <T extends FigmaCollection[]>(
   dataFigma: T,
-  prefix: string
+  params: ToCssParams
 ): string => {
   console.log("dataFigma", dataFigma)
   const cssVariables = dataFigma.flatMap(collection => {
-    const collectionName = fixText(collection.name)
-    const newPrefix = prefix ? `${prefix}` : "--"
+    const collectionName = params.includeCollections
+      ? fixText(collection.name)
+      : ""
+    const newPrefix = params.prefix ? `${params.prefix}` : "--"
     return collection.variables
       .filter(variable => variable.resolvedType !== "BOOLEAN")
       .map(variable => {
@@ -117,10 +119,6 @@ const toCss = <T extends FigmaCollection[]>(
             : String(variable.value)
 
         const parts = [newPrefix, collectionName, variableName].filter(Boolean)
-
-        // console.log("test>", `${parts.join("-")}: ${value};`)
-
-        console.log("value:", value)
 
         return `  ${parts.join("-")}: ${value};`
       })
@@ -186,6 +184,14 @@ const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
   return JSON.stringify(tokenObject, null, 2)
 }
 
+/**
+ * Converts Figma variable collections into an HTML table.
+ *
+ * @template T - A list of Figma variable collections.
+ * @param {T} dataFigma - The array of Figma collections to convert.
+ * @returns {string} An HTML table as a string.
+ * @todo This function is not yet implemented.
+ */
 const toHTMLTable = <T extends FigmaCollection[]>(dataFigma: T): string => {
   return ""
 }

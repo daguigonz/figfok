@@ -2,7 +2,7 @@
 :root,
 [data-theme="light"] {
   /* base */
-  --tes: #07ef2c;
+  --color-primary: #3a8c1a;
   --color-orange: #ff3617;
   --color-blue: #0d99ff;
   --color-purple: #9747ff;
@@ -17,12 +17,14 @@
 
   /* background */
   --color-backgroud: var(--color-white);
-  --color-background-primary: var(--color-orange);
+  --color-background-brand: var(--color-orange);
+  --color-background-primary: var(--color-primary);
   --color-background-secondary: var(--color-blue);
   --color-background-tertiary: var(--color-gray);
   --color-background-inverso: none;
 
   /* Colores de borde y división */
+  --color-input: #383838;
   --color-border: #444444;
   --color-border-light: #444444;
   --color-divider: #444444;
@@ -34,7 +36,7 @@
   :root:not([data-theme]),
   [data-theme="dark"] {
     /* base */
-    --tes: yellow;
+    --color-primary: #3a8c1a;
     --color-orange: #ff3617;
     --color-blue: #0d99ff;
     --color-purple: #9747ff;
@@ -49,12 +51,14 @@
 
     /* background */
     --color-backgroud: var(--color-white);
-    --color-background-primary: var(--color-orange);
+    --color-background-brand: var(--color-orange);
+    --color-background-primary: var(--color-primary);
     --color-background-secondary: var(--color-blue);
     --color-background-tertiary: var(--color-gray);
     --color-background-inverso: none;
 
-    /* Colores de borde y división */
+    /* UI  */
+    --color-input: #383838;
     --color-border: #444444;
     --color-border-light: #444444;
     --color-divider: #444444;
@@ -62,6 +66,9 @@
 }
 
 :root {
+  /* Color */
+  --color-dark: #474747;
+
   /* Fonts */
   --font-family: "Inter", sans-serif;
   --font-size-base: 12px;

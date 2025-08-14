@@ -6,7 +6,9 @@
 
 .title {
   font-size: var(--font-size-big);
+  line-height: normal;
   font-weight: bold;
+  margin-bottom: var(--space-3);
 }
 
 .text {
@@ -31,7 +33,7 @@
   box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
 }
 .circle:after {
-  box-shadow: 0 2px 0 var(--color-background-primary) inset;
+  box-shadow: 0 2px 0 var(--color-background-brand) inset;
   animation: rotate 2s linear infinite;
 }
 @keyframes rotate {

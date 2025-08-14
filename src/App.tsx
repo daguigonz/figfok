@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { MainLayout } from "@layouts/MainLayout"
 import { Loading } from "@components/Loading"
 import { Button } from "@components/Button"
+import { Switch } from "@components/Switch"
 import { Block } from "@components/Block"
 
 import { getExportOptions, toCss, toTokens, toHTMLTable } from "./utils/figTok"
@@ -20,6 +21,10 @@ function App() {
     panelCode: " ",
     inputPrefix: {
       value: "--c"
+    },
+    switchAddPrefixCollection: {
+      value: true,
+      label: "Incluir collection"
     }
   })
 
@@ -34,9 +39,20 @@ function App() {
 
     window.onmessage = event => {
       callBackFigma(event)
-      console.log("efect")
     }
   }, [])
+
+  useEffect(() => {
+    // Re-run the export process whenever the relevant config or data changes.
+    // The check for dataFigma.length prevents this from running on the initial empty state.
+    if (dataFigma.length > 0) {
+      processExport(uiConfig.tab.index)
+    }
+  }, [
+    uiConfig.inputPrefix.value,
+    uiConfig.switchAddPrefixCollection.value,
+    dataFigma
+  ])
 
   /**
    * Initiates communication from the UI (iframe) to the Figma plugin.
@@ -84,19 +100,15 @@ function App() {
     // Handle supported message types
     if (message.type === "data-figma") {
       const figmaData = message.data
-      const initialCode = toCss(figmaData, uiConfig.inputPrefix.value)
-
-      setAppConfig({
-        ...appConfig,
-        load: false
-      })
-
+      // Set dataFigma which will trigger the useEffect to process the code
       setDataFigma(figmaData)
 
-      setUiConfig(prevUiConfig => ({
-        ...prevUiConfig,
-        panelCode: initialCode
-      }))
+      setTimeout(() => {
+        setAppConfig({
+          ...appConfig,
+          load: false
+        })
+      }, 2000)
     } else if (message.type === "error") {
       console.log("error", message.message)
     } else {
@@ -105,43 +117,87 @@ function App() {
     }
   }
 
+  /**
+   * Handles the selection of an export option.
+   *
+   * @param {string} option - The selected export option (e.g., "Css", "Tokens").
+   */
   const handleSelectOptionExport = (option: string) => {
-    let process = processExport(option)
-    console.log("click:", option)
-    setUiConfig({
-      ...uiConfig,
-      tab: {
-        index: option
-      },
-      panelCode: process
-    })
+    processExport(option)
   }
 
+  /**
+   * Processes the export based on the selected option.
+   *
+   * This function generates the code string based on the selected format (Css, Tokens, etc.),
+   * and updates the UI state to display the result.
+   *
+   * @param {string} optionExport - The export format to use.
+   * @returns {string} The generated code string.
+   */
   const processExport = (optionExport: string): string => {
     let result = " "
 
+    if (dataFigma.length === 0) {
+      return ""
+    }
+
     if (optionExport === "Css") {
-      result = toCss(dataFigma, uiConfig.inputPrefix.value)
+      result = toCss(dataFigma, {
+        prefix: uiConfig.inputPrefix.value,
+        includeCollections: uiConfig.switchAddPrefixCollection.value
+      })
     } else if (optionExport === "Tokens") {
       result = toTokens(dataFigma)
     } else if (optionExport === "Table") {
       result = toHTMLTable(dataFigma)
     }
 
+    setUiConfig(prevUiConfig => ({
+      ...prevUiConfig,
+      tab: {
+        index: optionExport
+      },
+      panelCode: result
+    }))
+
     return result
   }
   /**
-   * Handles the input of the prefix value.
+   * Handles changes to the prefix input field.
    *
-   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event triggered by the input.
+   * Updates the UI state with the new prefix value. The component's `useEffect`
+   * hook will then trigger a re-export.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
    */
   const handleInputPrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUiConfig({
-      ...uiConfig,
+    // Only update the state here. The useEffect will handle the rest.
+    setUiConfig(prevUiConfig => ({
+      ...prevUiConfig,
       inputPrefix: {
         value: e.target.value
       }
-    })
+    }))
+  }
+
+  /**
+   * Handles the toggle of the 'include collections' switch.
+   *
+   * Updates the UI state with the new boolean value. The component's `useEffect`
+   * hook will then trigger a re-export.
+   *
+   * @param {boolean} checked - The new value of the switch.
+   */
+  const handleSwitchOnchange = (checked: boolean) => {
+    // Only update the state here. The useEffect will handle the rest.
+    setUiConfig(prevUiConfig => ({
+      ...prevUiConfig,
+      switchAddPrefixCollection: {
+        ...prevUiConfig.switchAddPrefixCollection,
+        value: checked
+      }
+    }))
   }
 
   return (
@@ -178,27 +234,41 @@ function App() {
           <MainLayout.Hr />
 
           <Block className="p-b-2" variant="grid" col={"col_70_20"}>
-            <Block.Col>
+            <Block.Col className="m-r-2">
               <Block.RenderView> {uiConfig.panelCode} </Block.RenderView>
             </Block.Col>
             <Block.Col className="align-v">
-              <div className="m-b-2">
-                <label className="m-r-2">Prefijo</label>
+              <div className="m-b-1">
+                <h2>Opciones</h2>
+                {uiConfig.tab.index === "Css" && (
+                  <div>
+                    <label className="m-r-1">Prefijo</label>
+                    <input
+                      type="text"
+                      id="Name"
+                      name="Name"
+                      className="m-b-1"
+                      value={uiConfig.inputPrefix.value}
+                      onChange={e => handleInputPrefix(e)}
+                    />
 
-                <input
-                  type="text"
-                  id="Name"
-                  name="Name"
-                  value={uiConfig.inputPrefix.value}
-                  onChange={e => handleInputPrefix(e)}
-                />
+                    <Switch
+                      id="switch"
+                      variant="primary"
+                      checked={uiConfig.switchAddPrefixCollection.value}
+                      onChange={e => handleSwitchOnchange(e)}
+                    >
+                      {uiConfig.switchAddPrefixCollection.label}
+                    </Switch>
+                  </div>
+                )}
               </div>
 
               <Button
                 variant="outline"
-                size="large"
+                size="medium"
                 fullWidth
-                className="m-b-2"
+                className="m-b-1"
               >
                 Copy
               </Button>

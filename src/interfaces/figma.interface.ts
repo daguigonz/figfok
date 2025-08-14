@@ -11,6 +11,11 @@ export interface FigmaCollection {
   variables: FigmaVariable[]
 }
 
+export interface ToCssParams {
+  prefix: string
+  includeCollections: true | false
+}
+
 export interface FigmaVariable {
   id: string
   key: string
