@@ -6,7 +6,7 @@ import {
 } from "@/interfaces/figma.interface"
 
 const getExportOptions = (): ExportOption[] => {
-  return ["Css", "Tokens", "Table"]
+  return ["Css", "Tokens", "Color"]
 }
 
 /**
@@ -82,6 +82,16 @@ const fixText = (texto: string): string => {
   return finalText
 }
 
+/*
+ * Filters the Figma data to only include the "Colors" collection.
+ *
+ * @param {FigmaCollection[]} dataFigma - The array of Figma collections to filter.
+ * @returns {FigmaCollection[]} An array of Figma collections that match the "Colors" name.
+ */
+const filterColors = (dataFigma: FigmaCollection[]): FigmaCollection[] => {
+  return dataFigma.filter(collection => collection.name === "Colors")
+}
+
 /**
  * Transforms a list of Figma variable collections into a CSS `:root` block
  * containing custom property declarations (CSS variables).
@@ -151,10 +161,10 @@ const toCss = <T extends FigmaCollection[]>(
  */
 const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
   const tokenObject = dataFigma.reduce(
-    (acc, collection) => {
+    (tokenBuilder, collection) => {
       const collectionName = fixText(collection.name)
 
-      acc[collectionName] = collection.variables.reduce(
+      tokenBuilder[collectionName] = collection.variables.reduce(
         (vars, variable) => {
           const variableName = fixText(variable.name)
 
@@ -167,8 +177,8 @@ const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
           if (type === "float") type = "number"
 
           vars[variableName] = {
-            $value: value,
-            $type: type
+            value: value,
+            type: type
           }
 
           return vars
@@ -176,12 +186,13 @@ const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
         {} as Record<string, any>
       )
 
-      return acc
+      return tokenBuilder
     },
     {} as Record<string, any>
   )
 
-  return JSON.stringify(tokenObject, null, 2)
+  const jsonString = JSON.stringify(tokenObject, null, 2)
+  return jsonString.replace(/"([^"]+)":/g, "$1:")
 }
 
 /**
@@ -247,6 +258,7 @@ const mergeCollectionsAndVariables = <
 
 export {
   getExportOptions,
+  filterColors,
   toTokens,
   toCss,
   toHTMLTable,

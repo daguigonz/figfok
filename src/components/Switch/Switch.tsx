@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React from "react"
 import { cva } from "class-variance-authority"
 import { clsx } from "clsx"
 import styles from "./Switch.module.css"

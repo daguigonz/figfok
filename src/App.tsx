@@ -4,6 +4,7 @@ import { Loading } from "@components/Loading"
 import { Button } from "@components/Button"
 import { Switch } from "@components/Switch"
 import { Block } from "@components/Block"
+import { ColorPalette } from "@components/ColorPalette"
 
 import { getExportOptions, toCss, toTokens, toHTMLTable } from "./utils/figTok"
 
@@ -99,9 +100,8 @@ function App() {
 
     // Handle supported message types
     if (message.type === "data-figma") {
-      const figmaData = message.data
       // Set dataFigma which will trigger the useEffect to process the code
-      setDataFigma(figmaData)
+      setDataFigma(message.data)
 
       setTimeout(() => {
         setAppConfig({
@@ -211,10 +211,9 @@ function App() {
       ) : (
         <MainLayout>
           <div className="text">
-            FigTok es un plugin gratuito que convierte design tokens de Figma en
-            CSS, JSON y más. Perfecto para diseñadores y developers que buscan
-            consistencia visual y entrega rápida. Personaliza prefijos, exporta
-            al instante y copia con un clic. Simple, veloz y productivo.
+            FigTok convierte design tokens de Figma en CSS, JSON y más. Para
+            diseñadores y developers que quieren rapidez y consistencia.
+            Personaliza, exporta y copia fácil.
           </div>
 
           <Block variant="nowrap">
@@ -235,6 +234,8 @@ function App() {
 
           <Block className="p-b-2" variant="grid" col={"col_70_20"}>
             <Block.Col className="m-r-2">
+              {uiConfig.tab.index === "Css" && <ColorPalette variant="base" />}
+
               <Block.RenderView> {uiConfig.panelCode} </Block.RenderView>
             </Block.Col>
             <Block.Col className="align-v">

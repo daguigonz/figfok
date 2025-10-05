@@ -1,14 +1,14 @@
 import type React from "react"
 
-// Variantes del componente Switch
+// Switch component variants
 export type SwitchVariant = "primary" | "secondary"
 
-// Interfaz base de variantes
+// Base variant interface
 interface SwitchVariantProps {
   variant?: SwitchVariant
 }
 
-// Tipado avanzando props nativas con nuestras variantes
+// Advanced typing of native props with our variants
 export interface SwitchProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onChange">,
     SwitchVariantProps {
