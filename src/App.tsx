@@ -6,7 +6,12 @@ import { Switch } from "@components/Switch"
 import { Block } from "@components/Block"
 import { ColorPalette } from "@components/ColorPalette"
 
-import { getExportOptions, toCss, toTokens, toHTMLTable } from "./utils/figTok"
+import {
+  getExportOptions,
+  toCss,
+  toTokens,
+  toColorPalette
+} from "@/utils/figTok"
 
 function App() {
   const optionsExport = getExportOptions()
@@ -20,6 +25,9 @@ function App() {
       index: "Css"
     },
     panelCode: " ",
+    colorPalette: {
+      value: {}
+    },
     inputPrefix: {
       value: "--c"
     },
@@ -137,20 +145,23 @@ function App() {
    */
   const processExport = (optionExport: string): string => {
     let result = " "
+    let resultColorPalette: Record<string, string> = {}
+    const params = {
+      prefix: uiConfig.inputPrefix.value,
+      includeCollections: uiConfig.switchAddPrefixCollection.value,
+      filterColors: false
+    }
 
     if (dataFigma.length === 0) {
       return ""
     }
 
     if (optionExport === "Css") {
-      result = toCss(dataFigma, {
-        prefix: uiConfig.inputPrefix.value,
-        includeCollections: uiConfig.switchAddPrefixCollection.value
-      })
+      result = toCss(dataFigma, params)
     } else if (optionExport === "Tokens") {
       result = toTokens(dataFigma)
-    } else if (optionExport === "Table") {
-      result = toHTMLTable(dataFigma)
+    } else if (optionExport === "Color") {
+      resultColorPalette = toColorPalette(dataFigma, params)
     }
 
     setUiConfig(prevUiConfig => ({
@@ -158,7 +169,10 @@ function App() {
       tab: {
         index: optionExport
       },
-      panelCode: result
+      panelCode: result,
+      colorPalette: {
+        value: resultColorPalette
+      }
     }))
 
     return result
@@ -234,16 +248,26 @@ function App() {
 
           <Block className="p-b-2" variant="grid" col={"col_70_20"}>
             <Block.Col className="m-r-2">
-              {uiConfig.tab.index === "Css" && <ColorPalette variant="base" />}
+              {/* Render - init */}
+              {uiConfig.tab.index === "Color" && (
+                <ColorPalette
+                  variant="base"
+                  values={uiConfig.colorPalette.value}
+                />
+              )}
 
-              <Block.RenderView> {uiConfig.panelCode} </Block.RenderView>
+              {["Css", "Tokens"].includes(uiConfig.tab.index) && (
+                <Block.RenderView> {uiConfig.panelCode} </Block.RenderView>
+              )}
+              {/* Render - end */}
             </Block.Col>
             <Block.Col className="align-v">
-              <div className="m-b-1">
+              <div className="m-b-1 w-full">
                 <h2>Opciones</h2>
-                {uiConfig.tab.index === "Css" && (
+                {["Css", "Color"].includes(uiConfig.tab.index) && (
                   <div>
                     <label className="m-r-1">Prefijo</label>
+
                     <input
                       type="text"
                       id="Name"

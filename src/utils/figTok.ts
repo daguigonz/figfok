@@ -82,89 +82,19 @@ const fixText = (texto: string): string => {
   return finalText
 }
 
-/*
- * Filters the Figma data to only include the "Colors" collection.
- *
- * @param {FigmaCollection[]} dataFigma - The array of Figma collections to filter.
- * @returns {FigmaCollection[]} An array of Figma collections that match the "Colors" name.
- */
-const filterColors = (dataFigma: FigmaCollection[]): FigmaCollection[] => {
-  return dataFigma.filter(collection => collection.name === "Colors")
-}
-
 /**
- * Transforms a list of Figma variable collections into a CSS `:root` block
- * containing custom property declarations (CSS variables).
+ * Normalizes Figma collections and variables into a structured object.
  *
  * @template T - A list of Figma variable collections.
- * @param {T} dataFigma - The array of Figma collections to transform.
- * @param {ToCssParams} params - Parameters for CSS conversion, including an optional prefix and a flag to include collection names.
- * @returns {string} A formatted CSS string containing all variables under a `:root` block.
- *
- * @example
- * const css = toCss(figmaCollections, { prefix: "--theme", includeCollections: true });
- * console.log(css);
- * // :root {
- * //   --theme-colors-primary: #ff0000;
- * //   --theme-spacing-md: 16px;
- * // }
+ * @param {T} dataFigma - The array of Figma collections to normalize.
+ * @returns {Record<string, unknown>} A structured object with normalized collection and variable names.
  */
-const toCss = <T extends FigmaCollection[]>(
-  dataFigma: T,
-  params: ToCssParams
-): string => {
-  console.log("dataFigma", dataFigma)
-  const cssVariables = dataFigma.flatMap(collection => {
-    const collectionName = params.includeCollections
-      ? fixText(collection.name)
-      : ""
-    const newPrefix = params.prefix ? `${params.prefix}` : "--"
-    return collection.variables
-      .filter(variable => variable.resolvedType !== "BOOLEAN")
-      .map(variable => {
-        const variableName = fixText(variable.name)
-        const value =
-          variable.resolvedType === "COLOR"
-            ? rgbtohex(variable.value.r, variable.value.g, variable.value.b)
-            : String(variable.value)
-
-        const parts = [newPrefix, collectionName, variableName].filter(Boolean)
-
-        return `  ${parts.join("-")}: ${value};`
-      })
-  })
-
-  return [":root {", ...cssVariables, "}"].join("\n")
-}
-
-/**
- * Converts Figma variable collections into a structured JSON Design Tokens format.
- *
- * Each variable is normalized with a `$value` and `$type` property. Colors are converted to hexadecimal,
- * and type names are adapted to common token conventions (e.g. "FLOAT" becomes "number").
- *
- * @template T - A list of Figma variable collections.
- * @param {T} dataFigma - The array of Figma collections to convert.
- * @returns {string} A JSON string representing the design tokens.
- *
- * @example
- * const json = toTokens(figmaCollections);
- * console.log(json);
- * // {
- * //   "colors": {
- * //     "primary": {
- * //       "$value": "#ff0000",
- * //       "$type": "color"
- * //     }
- * //   }
- * // }
- */
-const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
+const normalizeCollectionsAndVariables = <T extends FigmaCollection[]>(
+  dataFigma: T
+): Record<string, unknown> => {
   const tokenObject = dataFigma.reduce(
     (tokenBuilder, collection) => {
-      const collectionName = fixText(collection.name)
-
-      tokenBuilder[collectionName] = collection.variables.reduce(
+      tokenBuilder[fixText(collection.name)] = collection.variables.reduce(
         (vars, variable) => {
           const variableName = fixText(variable.name)
 
@@ -191,20 +121,138 @@ const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
     {} as Record<string, any>
   )
 
-  const jsonString = JSON.stringify(tokenObject, null, 2)
-  return jsonString.replace(/"([^"]+)":/g, "$1:")
+  return tokenObject
 }
 
 /**
- * Converts Figma variable collections into an HTML table.
+ * Applies presets to the normalized Figma data, creating a flat key-value object for CSS variables.
+ * It filters variables based on type (color, number) and formats them with a prefix.
+ *
+ * @param {Record<string, any>} data - The normalized Figma data object.
+ * @param {ToCssParams} params - Parameters for filtering and formatting, like prefix, and flags for including collections, colors, or numbers.
+ * @returns {Record<string, any>} A flat object of CSS custom properties.
+ */
+const applyPresets = (
+  data: Record<string, any>,
+  params: ToCssParams
+): Record<string, any> => {
+  const prefix = params.prefix ?? "--"
+  const newVariables = Object.entries(data).flatMap(
+    ([collectionName, variables]) =>
+      Object.entries(variables as Record<string, any>)
+        .filter(
+          ([, { type }]) =>
+            (params.filterColors && type === "color") ||
+            (params.filterNumber && type === "number")
+        )
+        .map(([variableName, { value, type }]): [string, string] => {
+          const newKey = [
+            prefix,
+            params.includeCollections ? collectionName : "",
+            variableName
+          ]
+            .filter(Boolean)
+            .join("-")
+          const newValue = type === "number" ? `${value}px` : value
+          return [newKey, newValue]
+        })
+  )
+
+  return Object.fromEntries(newVariables)
+}
+
+/*
+ * Filters the Figma data to only include the "Colors" collection.
+ *
+ * @param {FigmaCollection[]} dataFigma - The array of Figma collections to filter.
+ * @returns {FigmaCollection[]} An array of Figma collections that match the "Colors" name.
+ */
+const filterColors = (dataFigma: FigmaCollection[]): FigmaCollection[] => {
+  return dataFigma.filter(collection => collection.name === "Colors")
+}
+
+/**
+ * Transforms a list of Figma variable collections into a CSS `:root` block.
+ * This function specifically processes variables of type 'color' and 'number'.
+ *
+ * @template T - A list of Figma variable collections.
+ * @param {T} dataFigma - The array of Figma collections to transform.
+ * @param {ToCssParams} params - Parameters for CSS conversion, like an optional prefix and a flag to include collection names.
+ * @returns {string} A formatted CSS string containing all 'color' and 'number' variables under a `:root` block.
+ *
+ * @example
+ * const css = toCss(figmaCollections, { prefix: "--theme", includeCollections: true });
+ * console.log(css);
+ * // :root {
+ * //   --theme-colors-primary: #ff0000;
+ * //   --theme-spacing-md: 16px;
+ * // }
+ */
+const toCss = <T extends FigmaCollection[]>(
+  dataFigma: T,
+  params: ToCssParams
+): string => {
+  const normalizedData = normalizeCollectionsAndVariables(dataFigma)
+  const presetsData = applyPresets(normalizedData, {
+    ...params,
+    filterColors: true,
+    filterNumber: true
+  })
+  const cssVariables = Object.entries(presetsData).map(
+    ([key, value]) => `    ${key}: ${value};`
+  )
+  return [":root {", ...cssVariables, "}"].join("\n")
+}
+
+/**
+ * Converts Figma variable collections into a structured JSON Design Tokens format.
+ *
+ * Each variable is normalized with a `$value` and `$type` property. Colors are converted to hexadecimal,
+ * and type names are adapted to common token conventions (e.g. "FLOAT" becomes "number").
  *
  * @template T - A list of Figma variable collections.
  * @param {T} dataFigma - The array of Figma collections to convert.
- * @returns {string} An HTML table as a string.
- * @todo This function is not yet implemented.
+ * @returns {string} A JSON string representing the design tokens.
+ *
+ * @example
+ * const json = toTokens(figmaCollections);
+ * console.log(json);
+ * // {
+ * //   "colors": {
+ * //     "primary": {
+ * //       "$value": "#ff0000",
+ * //       "$type": "color"
+ * //     }
+ * //   }
+ * // }
  */
-const toHTMLTable = <T extends FigmaCollection[]>(dataFigma: T): string => {
-  return ""
+const toTokens = <T extends FigmaCollection[]>(dataFigma: T): string => {
+  const normalizedData = normalizeCollectionsAndVariables(dataFigma)
+  return JSON.stringify(normalizedData, null, 2).replace(/"([^"]+)":/g, "$1:")
+}
+
+/**
+ * Builds a color palette from Figma collections, transforming variables into a flat key-value object.
+ *
+ * This function processes Figma variables, normalizes them, and then applies presets
+ * to generate CSS-like variable names (e.g., '--c-colors-primary'). It can also filter
+ * to include only color variables based on the params.
+ *
+ * @template T - A list of Figma variable collections.
+ * @param {T} dataFigma - The array of Figma collections to convert.
+ * @param {ToCssParams} params - Parameters for conversion, including prefix and filtering options.
+ * @returns {Record<string, any>} A flat object where keys are CSS custom property names and values are the color values.
+ */
+const toColorPalette = <T extends FigmaCollection[]>(
+  dataFigma: T,
+  params: ToCssParams
+): Record<string, any> => {
+  const normalizedData = normalizeCollectionsAndVariables(dataFigma)
+  const presetsData = applyPresets(normalizedData, {
+    ...params,
+    filterColors: true
+  })
+  return presetsData
 }
 
 /**
@@ -261,6 +309,6 @@ export {
   filterColors,
   toTokens,
   toCss,
-  toHTMLTable,
+  toColorPalette,
   mergeCollectionsAndVariables
 }

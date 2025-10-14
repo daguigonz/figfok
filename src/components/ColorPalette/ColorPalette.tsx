@@ -1,4 +1,4 @@
-import React from "react"
+import { useState, useEffect } from "react"
 import { cva } from "class-variance-authority"
 import { clsx } from "clsx"
 import styles from "./ColorPalette.module.css"
@@ -19,11 +19,20 @@ export const colorPaletteVariants = cva(styles.base, {
 export const ColorPalette = ({
   className,
   variant,
-  dataFigma
+  values
 }: ColorPaletteProps) => {
   return (
     <div className={clsx(colorPaletteVariants({ variant }), className)}>
-      {dataFigma && <pre>{JSON.stringify(dataFigma, null, 2)}</pre>}
+      {Object.entries(values).map(([key, value]) => (
+        <div key={key} className={styles.item}>
+          <div className={styles.key}>{key}</div>
+          <div className={styles.value}>{value}</div>
+          <div
+            className={styles.swatch}
+            style={{ backgroundColor: value }}
+          ></div>
+        </div>
+      ))}
     </div>
   )
 }

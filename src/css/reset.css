@@ -36,13 +36,14 @@ body {
 
 h2 {
   font-size: 1.2rem;
-  font-weight: initial;
+  font-weight: bold;
   margin-bottom: var(--space-1);
 }
 
 label {
   opacity: 0.6;
   margin-bottom: var(--space-1);
+  display: block;
 }
 
 input {
@@ -69,6 +70,17 @@ footer {
   display: inline;
   height: 100vh;
   align-content: center;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  border: solid var(--color-border) 1px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  opacity: 0.5;
+  border-radius: 25%;
 }
 
 footer nav {

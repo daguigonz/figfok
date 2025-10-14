@@ -13,6 +13,6 @@ interface ColorPaletteVariantProps {
 export interface ColorPaletteProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "">,
     ColorPaletteVariantProps {
-  dataFigma?: FigmaCollection[]
+  values: Record<string, string>
   visible?: boolean
 }
