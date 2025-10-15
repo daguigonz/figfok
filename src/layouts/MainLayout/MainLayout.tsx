@@ -27,11 +27,22 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
       <footer>
         <nav className="container">
-          <a className="d-btn link" href="#link">
-            Ver còdigo fuente y contribuir
+          <Button
+            variant="outline"
+            onClick={e => {
+              e.preventDefault()
+              window.open("https://buymeacoffee.com/daguigonz")
+            }}
+          >
+            Dona para seguir creando
+          </Button>
+          <a
+            className="d-btn link"
+            href="mailto:figtok@aguirredaniels.com"
+            target="_blank"
+          >
+            Envíanos tu feedback
           </a>
-
-          <Button variant="outline">Colabora para la gaseosa</Button>
         </nav>
       </footer>
     </>

@@ -7,7 +7,7 @@
     "format": "prettier --write .",
     "tsc": "npm run tsc:main && npm run tsc:ui",
     "tsc:main": "tsc --noEmit -p core",
-    "tsc:ui": "tsc --noEmit -p src",
+    "tsc:ui": "tsc --noEmit -p .",
     "tsc:watch": "concurrently -n widget,iframe \"npm run tsc:main -- --watch --preserveWatchOutput\" \"npm run tsc:ui -- --watch --preserveWatchOutput\"",
     "build": "npm run build:ui && npm run build:main -- --minify",
     "build:main": "esbuild core/code.ts --bundle --outfile=dist/code.js",

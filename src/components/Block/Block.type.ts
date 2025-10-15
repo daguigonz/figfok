@@ -1,11 +1,11 @@
 import type React from "react"
 
-// type Variants
+// Variants type
 export type BlockVariants = "block" | "grid" | "nowrap"
 
 export type Col = "col_100" | "col_70_20"
 
-// interface´s
+// interface's
 export interface BlockVariantProps {
   variant?: BlockVariants
   col?: Col

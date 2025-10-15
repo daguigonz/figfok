@@ -27,7 +27,7 @@
 }
 
 .renderView {
-  min-height: 280px;
+  height: 280px;
   overflow: hidden;
   overflow-y: auto;
 }

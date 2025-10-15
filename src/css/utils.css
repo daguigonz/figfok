@@ -1,3 +1,7 @@
+.w-full {
+  width: 100%;
+}
+
 .d-flex {
   display: flex;
 }
@@ -26,8 +30,20 @@
   padding: var(--space-3) 0;
 }
 
+.p-b-1 {
+  padding: 0 0 var(--space-1) 0;
+}
+
+.p-b-2 {
+  padding: 0 0 var(--space-2) 0;
+}
+
 .p-b-3 {
   padding: 0 0 var(--space-3) 0;
+}
+
+.m-b-1 {
+  margin-bottom: var(--space-1);
 }
 
 .m-b-2 {

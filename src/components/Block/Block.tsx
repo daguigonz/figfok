@@ -41,6 +41,7 @@ export const Block = ({
   )
 }
 
+// </Block.Col>
 const Col = ({
   children,
   className,
@@ -56,6 +57,7 @@ const Col = ({
   )
 }
 
+// </Block.RenderView>
 const RenderView = ({
   children,
   ...props

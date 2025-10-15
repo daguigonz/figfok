@@ -4,23 +4,22 @@ import { mergeCollectionsAndVariables } from "../src/utils/figTok"
  * Figma UI
  * https://www.figma.com/plugin-docs/api/properties/showui/
  *
- * Mostrar la UI
+ * Show the UI
  */
 const settingsFigmaUI = {
   themeColors: true,
-  height: 600,
+  height: 620,
   width: 600
 }
 
 figma.showUI(__html__, settingsFigmaUI)
 
 /*
- * Figma whatch`s
+ * Figma listeners
  * https://www.figma.com/plugin-docs/api/properties/onmessage/
  *
- * Metodo "onmessage" que retorna un objeto, mediante la variable "type"
- * se puede identificar el tipo de mensaje
- *
+ * The "onmessage" method returns an object.
+ * The "type" variable can be used to identify the type of message.
  */
 figma.ui.onmessage = async (msg: any) => {
   try {
@@ -30,24 +29,24 @@ figma.ui.onmessage = async (msg: any) => {
         break
 
       default:
-        console.error("Mensaje no manejado:", msg.type)
+        // Log the unhandled message
+        console.error("Figma:", msg.type)
     }
   } catch (error) {
-    // Enviar error a la UI
+    // Send error to Figma (UI)
     figma.ui.postMessage({
       type: "error",
-      message: error instanceof Error ? error.message : "Error desconocido"
+      message: error instanceof Error ? error.message : "Unknown error"
     })
   }
 }
 
 /*
- * Figma whatch`s
+ * Figma listeners
  * https://www.figma.com/plugin-docs/api/properties/onmessage/
  *
- * Metodo "onmessage" que retorna un objeto, mediante la variable "type"
- * se puede identificar el tipo de mensaje
- *
+ * The "onmessage" method returns an object.
+ * The "type" variable can be used to identify the type of message.
  */
 async function handle_figma() {
   try {
@@ -63,7 +62,7 @@ async function handle_figma() {
     figma.ui.postMessage({
       type: "error",
       message:
-        "Error al obtener colecciones: " +
+        "Error getting collections: " +
         (error instanceof Error ? error.message : "Error desconocido")
     })
   }

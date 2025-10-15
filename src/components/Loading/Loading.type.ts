@@ -1,10 +1,10 @@
 import type React from "react"
 
-// Definimos los tipos de variantes directamente
+// We define the types of variants directly
 export type LoadingVariant = "circle" | "bar"
 export type LoadingVisible = "visible" | "hidden"
 
-// Interface base para las variantes
+// Base interface for variants
 interface LoadingVariantProps {
   variant?: LoadingVariant
   visible?: LoadingVisible

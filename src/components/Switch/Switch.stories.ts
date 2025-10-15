@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { Button } from "./Button"
+import { Switch } from "./Switch"
+// import React, { useState } from "@storybook/addons"
 
 const meta = {
-  title: "Components/Button",
-  component: Button,
+  title: "Components/Switch",
+  component: Switch,
   tags: ["autodocs"],
   parameters: {
     layout: "centered"
@@ -11,26 +12,26 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "active", "secondary", "outline", "danger", "text", "link"]
-    },
-    size: {
-      control: "select",
-      options: ["small", "medium", "large"]
+      options: ["primary", "secondary"]
     },
     disabled: {
       control: "boolean"
     },
-    onClick: { action: "clicked" }
+    checked: {
+      control: "boolean"
+    },
+    onChange: { action: "changed" }
   }
-} satisfies Meta<typeof Button>
+} satisfies Meta<typeof Switch>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
   args: {
+    id: "primary-switch",
     variant: "primary",
-    children: "Button",
+    children: "Default switch checkbox input",
     disabled: false
   }
 }
