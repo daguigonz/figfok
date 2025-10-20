@@ -1,9 +1,10 @@
-import { ExportOption } from "@/types/figma.type"
+import { ExportOption } from "../types/figma.type"
 import {
   FigmaCollection,
   FigmaVariable,
   ToCssParams
-} from "@/interfaces/figma.interface"
+} from "../interfaces/figma.interface"
+
 
 const getExportOptions = (): ExportOption[] => {
   return ["Css", "Tokens", "Color"]
@@ -138,14 +139,14 @@ const applyPresets = (
 ): Record<string, any> => {
   const prefix = params.prefix ?? "--"
   const newVariables = Object.entries(data).flatMap(
-    ([collectionName, variables]) =>
+    ([collectionName, variables]: [string, any]) =>
       Object.entries(variables as Record<string, any>)
         .filter(
-          ([, { type }]) =>
+          ([, { type }]: [string, { type: string }]) =>
             (params.filterColors && type === "color") ||
             (params.filterNumber && type === "number")
         )
-        .map(([variableName, { value, type }]): [string, string] => {
+        .map(([variableName, { value, type }]: [string, { value: any; type: string }]): [string, string] => {
           const newKey = [
             prefix,
             params.includeCollections ? collectionName : "",
@@ -199,7 +200,7 @@ const toCss = <T extends FigmaCollection[]>(
     filterNumber: true
   })
   const cssVariables = Object.entries(presetsData).map(
-    ([key, value]) => `    ${key}: ${value};`
+    ([key, value]: [string, string]) => `    ${key}: ${value};`
   )
   return [":root {", ...cssVariables, "}"].join("\n")
 }
@@ -264,12 +265,9 @@ const toColorPalette = <T extends FigmaCollection[]>(
  * @param {U} variables - The array of Figma variables to merge.
  * @returns {FigmaCollection[]} An array of merged Figma collections and variables.
  */
-const mergeCollectionsAndVariables = <
-  T extends FigmaCollection[],
-  U extends FigmaVariable[]
->(
-  collections: T,
-  variables: U
+const mergeCollectionsAndVariables = (
+  collections: any[],
+  variables: any[]
 ): FigmaCollection[] => {
   const tokens: FigmaCollection[] = []
 
@@ -277,7 +275,7 @@ const mergeCollectionsAndVariables = <
   collections.map(collection => {
     // Map over variables
     const newVariables: FigmaVariable[] = collection.variableIds
-      .map(variableId => {
+      .map((variableId: string) => {
         const variable = variables.find(v => v.id === variableId)
         if (variable) {
           return Object.assign({}, variable, {
@@ -288,7 +286,7 @@ const mergeCollectionsAndVariables = <
         }
         return undefined
       })
-      .filter((variable): variable is FigmaVariable => variable !== undefined)
+      .filter((variable: any): variable is FigmaVariable => variable !== undefined)
 
     // Create a new collection object with the desired structure
     const newCollection: FigmaCollection = {

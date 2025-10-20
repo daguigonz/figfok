@@ -149,7 +149,8 @@ function App() {
     const params = {
       prefix: uiConfig.inputPrefix.value,
       includeCollections: uiConfig.switchAddPrefixCollection.value,
-      filterColors: false
+      filterColors: false,
+      filterNumber: false
     }
 
     if (dataFigma.length === 0) {
@@ -262,10 +263,10 @@ function App() {
               {/* Render - end */}
             </Block.Col>
             <Block.Col className="align-v">
-              <div className="m-b-1 w-full">
+              <div className="m-b-1">
                 <h2>Opciones</h2>
                 {["Css", "Color"].includes(uiConfig.tab.index) && (
-                  <div>
+                  <div className="w-full">
                     <label className="m-r-1">Prefijo</label>
 
                     <input
