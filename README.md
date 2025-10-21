@@ -2,7 +2,6 @@
 
 ![Figtok](./resources/logo-color.png)
 
-<h1 align="center">Figma plugin </h1>
 </div>
 
 <div align="center">
