@@ -25,8 +25,6 @@ FigTok is a free plugin that converts Figma design tokens into CSS, JSON, and mo
 - **Figma**: A Figma account to use the plugin.
 
 ## About Me
-
-![Aguirre Daniels](https://github.com/daguigonz/resources/raigma plugi g/branding/AD.png)
-
+![Aguirre Daniels](https://github.com/daguigonz/resources/raw/main/branding/AD.png)
 - Twitter: [@daguigonz](https://x.com/daguigonz)
 - Newsletters: [aguirredaniels.com](https://aguirredaniels.com/)
