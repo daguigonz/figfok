@@ -4,9 +4,12 @@
 
 <h1 align="center">Figma plugin </h1>
 </div>
+
 <div align="center">
 FigTok is a free plugin that converts Figma design tokens into CSS, JSON, and more. Perfect for designers and developers looking for visual consistency and fast delivery. Customize prefixes, export instantly, and copy with one click. Simple, fast, and productive.
 </div>
+
+![Screenshot](./resources/screenshot.png?v=01)
 
 ## Features
 
