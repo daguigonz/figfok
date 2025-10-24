@@ -31,7 +31,6 @@ body {
   align-content: space-between;
   justify-content: space-evenly;
   align-items: stretch;
-  height: 100%;
 }
 
 h2 {
@@ -53,6 +52,10 @@ input {
   border: none;
   padding: calc(var(--space-1) - 0.5rem) var(--space-1);
   background-color: var(--color-input);
+}
+
+.disabled {
+  opacity: 0.5;
 }
 
 footer {

@@ -64,13 +64,11 @@ export const Button = forwardRef<ButtonRef, ButtonProps>(
     )
 
     const isDisabled = isLoading || disabled
+    const clsWidth: string = fullWidth ? styles.fullWidth : styles.autoWidth
 
     return (
       <button
-        className={clsx(
-          buttonVariants({ variant, size, fullWidth: fullWidth }),
-          className
-        )}
+        className={clsx(buttonVariants({ variant, size }), clsWidth, className)}
         disabled={isDisabled}
         onClick={handleClick}
         aria-disabled={isDisabled}

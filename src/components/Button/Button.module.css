@@ -140,6 +140,10 @@
   width: 100%;
 }
 
+.autoWidth {
+  width: min-content;
+}
+
 /* Loader - Animación optimizada */
 .loader {
   position: absolute;
