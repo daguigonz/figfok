@@ -5,6 +5,7 @@ import { Button } from "@components/Button"
 import { Switch } from "@components/Switch"
 import { Block } from "@components/Block"
 import { ColorPalette } from "@components/ColorPalette"
+import { highlightCSS, highlightJSON } from "@/utils/highlight"
 
 import {
   getExportOptions,
@@ -324,7 +325,13 @@ function App() {
                   )}
 
                   {["Css", "Tokens"].includes(uiConfig.tab.index) && (
-                    <Block.RenderView> {uiConfig.panelCode} </Block.RenderView>
+                    <Block.RenderView
+                      html={
+                        uiConfig.tab.index === "Css"
+                          ? highlightCSS(uiConfig.panelCode)
+                          : highlightJSON(uiConfig.panelCode)
+                      }
+                    />
                   )}
                   {/* Render - end */}
                 </Block.Col>
