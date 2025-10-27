@@ -261,6 +261,49 @@ function App() {
     }))
   }
 
+  const handleClickCopy = () => {
+    const textToCopy = uiConfig.panelCode
+    if (!navigator.clipboard) {
+      const textArea = document.createElement("textarea")
+      textArea.value = textToCopy
+      document.body.appendChild(textArea)
+      textArea.select()
+      // @ts-ignore: 'execCommand' is deprecated, but used as a fallback.
+      document.execCommand("copy")
+      document.body.removeChild(textArea)
+      return
+    }
+    navigator.clipboard.writeText(textToCopy)
+  }
+
+  const handleClickDownload = () => {
+    const tab = uiConfig.tab.index
+    const content = uiConfig.panelCode
+    let filename = "tokens"
+    let mimeType = ""
+
+    if (tab === "Css") {
+      filename = "tokens.css"
+      mimeType = "text/css"
+    } else if (tab === "Tokens") {
+      filename = "tokens.json"
+      mimeType = "application/json"
+    } else {
+      // Nothing to download for other tabs
+      return
+    }
+
+    const blob = new Blob([content], { type: mimeType })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <>
       {appConfig.load ? (
@@ -368,6 +411,7 @@ function App() {
                     size="medium"
                     fullWidth
                     className="m-b-1"
+                    onClick={() => handleClickCopy()}
                   >
                     Copy
                   </Button>
@@ -377,6 +421,7 @@ function App() {
                     size="large"
                     fullWidth
                     className="m-b-2"
+                    onClick={() => handleClickDownload()}
                   >
                     Descarga
                   </Button>
